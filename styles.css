@@ -1,0 +1,12 @@
+.reportview-container {
+    background-color: #2b2b2b;  /* Dark background */
+}
+
+.sidebar .sidebar-content {
+    background-color: #2b2b2b;  /* Dark sidebar */
+    width: 200px;  /* Set the width of the sidebar */
+}
+
+.sidebar {
+    padding: 10px;  /* Adjust padding if needed */
+}

@@ -64,11 +64,15 @@ def extra_stats():
     df['xG performance'] = np.where((df['Goals per 90'] == 0) | (df['xG per 90'] == 0), 0, df['Goals per 90'] - df['xG per 90'])
     df['Successful dribbles per 90'] = df['Successful dribbles, %'] * df['Dribbles per 90']
     df['Successful crosses per 90'] = df['Accurate crosses, %'] * df['Crosses per 90']
+    df['Successful shots per 90'] = df['Shots per 90'] * df['Shots on target, %']
     df['xA/box entry'] = np.where((df['xA per 90'] == 0) | (df['Passes to penalty area per 90'] == 0), 0, df['xA per 90'] / df['Passes to penalty area per 90'])
+    df['xA/shot assist'] = np.where((df['xA per 90'] == 0) | (df['Shot assists per 90'] == 0), 0, df['xA per 90'] / df['Shot assists per 90'])
     df['Shot/box touch'] = np.where((df['Shots per 90'] == 0) | (df['Touches in box per 90'] == 0), 0, df['Shots per 90'] / df['Touches in box per 90'])
     df['Passes to final third per 90'] *= df['Accurate passes to final third, %'] 
     df['Passes to penalty area per 90'] *= df['Accurate passes to penalty area, %'] 
     df['Through passes per 90'] *= df['Accurate through passes, %'] 
+    df['Dangerous attacking actions per 90'] = df['Successful dribbles per 90'] + df['Shot assists per 90'] + df['Key passes per 90'] + df['Smart passes per 90'] + df['Through passes per 90'] + df['Deep completions per 90'] + df['Successful shots per 90']
+
 extra_stats()
 
 #def possession_adjust_def():
