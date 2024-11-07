@@ -23,8 +23,8 @@ def plot_player(df, player_name, season, position, team):
         'FB': ["Defensive duels won, %", "Aerial duels won, %", "PAdj Interceptions", "Progressive runs per 90", "Successful dribbles per 90", 'Progressive passes per 90', 'Passes to final third per 90', 'Accurate progressive passes, %', 'Accurate passes to final third, %', 'Dangerous attacking actions per 90'],
         'CM': ["Successful defensive actions per 90", "Progressive runs per 90", "Successful dribbles per 90", 'Progressive passes per 90', 'Passes to final third per 90', 'Accurate progressive passes, %', 'Through passes per 90', 'xA per 90', 'xG per 90', 'Dangerous attacking actions per 90'],
         'WIDE': ["Successful defensive actions per 90", "Progressive runs per 90", "Successful dribbles per 90", 'Fouls suffered per 90', 'Passes to final third per 90', 'Key passes per 90', 'xA per 90', 'xA/shot assist', 'xG per 90', 'Dangerous attacking actions per 90'],
-        'FW': ['Accurate short / medium passes, %', 'Passes to penalty area per 90', "Successful dribbles per 90", 'Deep completions per 90', 'Smart passes per 90', 'xA per 90', 'xA/shot assist', 'xG per 90', 'xG performance', 'Dangerous attacking actions per 90']
-    }
+        'FW': ['Accurate short / medium passes, %', 'Passes to penalty area per 90', "Successful dribbles per 90", 'Deep completions per 90', 'xA per 90', 'xA/shot assist', 'xG per 90', 'xG/shot', 'xG performance', 'Dangerous attacking actions per 90']
+            }
 
     default_columns = [
         "Successful dribbles per 90", 'Progressive runs per 90', "xA/box entry", "xA per 90", 
@@ -89,25 +89,31 @@ def plot_player(df, player_name, season, position, team):
     return fig
 
 def main():
-    df = pd.read_csv('maindata.csv') 
+    df = pd.read_csv('maindata.csv')
 
     # Define your team and season
-    selected_team = input('Team?')  # Replace with your team
-    selected_season = input('Season?')  # Replace with your season
+    selected_team = input('Team?')
+    selected_season = input('Season?')
 
-    players_in_team = df[df['Team within selected timeframe'] == selected_team]['Player'].unique()
-    
+    # Get all players in the selected team and season with their positions
+    team_data = df[(df['Team within selected timeframe'] == selected_team) & (df['Season'] == selected_season)]
+    players_with_positions = team_data[['Player', 'Position']].drop_duplicates()
+
+    # Define the desired order of positions
+    position_order = ['CB', 'FB', 'CM', 'WIDE', 'FW']
+    players_with_positions['Position'] = pd.Categorical(players_with_positions['Position'], categories=position_order, ordered=True)
+    sorted_players = players_with_positions.sort_values('Position')
+
+    # Generate radar plots and save to PDF in sorted order
     with PdfPages('radar_plots.pdf') as pdf:
-        for player_name in players_in_team:
-            # Retrieve position based on player selection
-            position_row = df[(df['Player'] == player_name) & (df['Season'] == selected_season)]
-            position = position_row['Position'].values[0] if not position_row.empty else None
-            
+        for _, row in sorted_players.iterrows():
+            player_name = row['Player']
+            position = row['Position']
+
             fig = plot_player(df, player_name, selected_season, position, selected_team)
-            if fig is not None:  # Only save if fig is valid
-                pdf.savefig(fig)  # Save the current figure to the PDF
-                plt.close(fig)    # Close the figure to avoid display
+            if fig is not None:
+                pdf.savefig(fig)
+                plt.close(fig)
 
 if __name__ == "__main__":
     main()
-
