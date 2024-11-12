@@ -5,9 +5,9 @@ import numpy as np
 
 def get_blue_shade(value):
     """Return a blue color that darkens with higher values (0-100)."""
-    # Define light and dark blue with more contrast
-    min_blue = np.array([173, 216, 230])  # RGB for light blue (LightSkyBlue)
-    max_blue = np.array([0, 0, 139])      # RGB for dark blue (DarkBlue)
+    # Define shades of blue
+    min_blue = np.array([173, 216, 230])  # (LightSkyBlue)
+    max_blue = np.array([0, 0, 139])      # (DarkBlue)
 
     # Interpolate color based on value (0-100)
     color = min_blue + (max_blue - min_blue) * (value / 100)
@@ -22,7 +22,7 @@ def plot_player(df, player_name, season, position, team):
         fig, ax = plt.subplots(figsize=(8, 8.5), subplot_kw=dict(polar=True))
         return fig
 
-    # Define position-specific columns
+    # Position-specific columns
     position_columns = {
         'CB': ["Defensive duels won, %", "Aerial duels won, %", "PAdj Interceptions", "Progressive runs per 90", "Successful dribbles per 90", 'Progressive passes per 90', 'Passes to final third per 90', 'Accurate progressive passes, %', 'Accurate passes to final third, %', 'Accurate long passes, %'],
         'FB': ["Defensive duels won, %", "Aerial duels won, %", "PAdj Interceptions", "Progressive runs per 90", "Successful dribbles per 90", 'Progressive passes per 90', 'Passes to final third per 90', 'Accurate progressive passes, %', 'Accurate passes to final third, %', 'Dangerous attacking actions per 90'],
@@ -30,7 +30,7 @@ def plot_player(df, player_name, season, position, team):
         'WIDE': ["Successful defensive actions per 90", "Progressive runs per 90", "Successful dribbles per 90", 'Fouls suffered per 90', 'Passes to final third per 90', 'Key passes per 90', 'xA per 90', 'xA/shot assist', 'xG per 90', 'Dangerous attacking actions per 90'],
         'FW': ['Accurate short / medium passes, %', 'Passes to penalty area per 90', "Successful dribbles per 90", 'Deep completions per 90', 'xA per 90', 'xA/shot assist', 'xG per 90', 'xG/shot', 'xG performance', 'Dangerous attacking actions per 90']
     }
-
+    # Default columns if position fails - shouldn't do but just incase
     default_columns = [
         "Successful dribbles per 90", 'Progressive runs per 90', "xA/box entry", "xA per 90", 
         "Progressive passes per 90", "Accurate progressive passes, %", 
@@ -44,23 +44,24 @@ def plot_player(df, player_name, season, position, team):
     # Get values for selected columns
     values = player_data[selected_columns].values.flatten()
 
-    # Ensure values are formatted as integers with no decimal places
+    # Format values into integers - to remove decimals as it makes plot look worse
     formatted_values = [int(round(v)) for v in values]
 
-    # Check if lengths are equal
+    # Error handling if 
     if len(selected_columns) != len(formatted_values):
         print(f"Error: Length of params ({len(selected_columns)}) and values ({len(formatted_values)}) do not match for player {player_name} in season {season}.")
         return None  # or handle the error appropriately
 
     params = selected_columns
 
-    # Generate slice colors based on value from light blue -> dark blue
+    # Calls get blue shade func
     slice_colors = [get_blue_shade(value) for value in formatted_values]
 
-    # Create figure and polar axes
+    # Create figure + assign figure background color and polar axes
     fig, ax = plt.subplots(figsize=(8, 8.5), subplot_kw=dict(polar=True))
     fig.patch.set_facecolor("#0E1118")
 
+    # Standard formatting to create radar/pizza copied from mpl soccer
     baker = PyPizza(
         params=params,
         background_color="#2b2b2b",
@@ -85,6 +86,7 @@ def plot_player(df, player_name, season, position, team):
                            bbox=dict(edgecolor="#FFFFFF", facecolor="#2b2b2b", boxstyle="round,pad=0.2", lw=1))
     )
 
+# Captions for player name and season, xy for position
     fig.text(0.515, 0.965, player_name, size=16, ha="center", 
              fontproperties=FontManager('https://raw.githubusercontent.com/googlefonts/roboto/main/src/hinted/Roboto-Regular.ttf').prop, color="#FFFFFF")
     fig.text(0.515, 0.923, season, size=13, ha="center", 
