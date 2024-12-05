@@ -53,7 +53,7 @@ corrStack = significant_corrMat.stack()
 corrStack = corrStack[corrStack.index.get_level_values(0) != corrStack.index.get_level_values(1)]
 
 # Match values that contain npxG and not Oppo only
-xg_corr = corrStack[((corrStack.index.get_level_values(0) == 'xPTS') & (~corrStack.index.get_level_values(1).astype(str).str.contains('Oppo')))]
+xg_corr = corrStack[((corrStack.index.get_level_values(0) == 'Oppo xG') & (~corrStack.index.get_level_values(1).astype(str).str.contains('Oppo')))]
 
 sorted_xg_corr = xg_corr.sort_values(ascending=False)
 
