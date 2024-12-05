@@ -89,7 +89,7 @@ def plot_player(df, player_name, season, position, team):
     return fig
 
 def main():
-    df = pd.read_csv('maindata.csv')
+    df = pd.read_csv('./data/maindata.csv')
 
     # Define your team and season
     selected_team = input('Team?')

@@ -4,9 +4,9 @@ import numpy as np
 from scipy.stats import zscore
 
 
-folder2223_path = '/Users/as/Personal projects/FootballProjects/2223/1'
-folder2324_path = '/Users/as/Personal projects/FootballProjects/2324/1'
-folder2425_path = '/Users/as/Personal projects/FootballProjects/2425/1'
+folder2223_path = './data/2223/1'
+folder2324_path = './data/2324/1'
+folder2425_path = './data/2425/1'
 
 def process_data_sets():
     df_2223 = pd.DataFrame()
