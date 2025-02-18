@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from scripts.radar_plot import plot_player 
+from radar_plot import plot_player 
 
 # Set Streamlit to dark mode at the beginning
 st.markdown(
@@ -34,7 +34,7 @@ st.markdown(
 )
 
 # Load data
-df = pd.read_csv('./data/maindata.csv') 
+df = pd.read_csv('maindata.csv') 
 
 # Sidebar for user inputs
 st.header("Football Player Pizza Plot")  
